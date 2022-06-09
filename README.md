@@ -10,5 +10,5 @@ The aim of this project is to build a telemetry pipeline POC that specifically u
 # Running the project
 
 ```
-docker-compose -f ./docker-compose up
+docker-compose up
 ```
