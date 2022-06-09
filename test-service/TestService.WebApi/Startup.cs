@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -29,19 +29,19 @@ namespace TestService.WebApi
       // This method gets called by the runtime. Use this method to add services to the container.
       public void ConfigureServices(IServiceCollection services)
       {
-         AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+         //AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
-         services.AddOpenTelemetryTracing(builder => builder
-            .AddAspNetCoreInstrumentation()
-            .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("my-app"))
-            .AddOtlpExporter(options =>
-            {
-               options.Endpoint = new Uri("http://192.168.99.100:4317");
-            })
-         );
+         // services.AddOpenTelemetryTracing(builder => builder
+         //    .AddAspNetCoreInstrumentation()
+         //    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("my-app"))
+         //    .AddOtlpExporter(options =>
+         //    {
+         //       options.Endpoint = new Uri("http://192.168.99.100:4317");
+         //    })
+         // );
 
          services.AddApiVersioning(options => options.ReportApiVersions = true);
-         
+
          services
             .AddMvc()
             .AddNewtonsoftJson()

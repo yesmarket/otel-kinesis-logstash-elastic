@@ -44,6 +44,9 @@ services:
          context: otel/
       hostname: otel
       container_name: otel
+      environment:
+         AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+         AWS_SECRET_KEY: $AWS_SECRET_KEY
       restart: always
       ports:
          - 4317:4317

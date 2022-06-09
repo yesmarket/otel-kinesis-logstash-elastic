@@ -9,7 +9,6 @@ exporters:
       aws:
          stream_name: otelpoc
          region: ap-southeast-2
-         role: arn:aws:iam::232967915117:role/otelpoc
       encoding:
          name: otlp_json
 
