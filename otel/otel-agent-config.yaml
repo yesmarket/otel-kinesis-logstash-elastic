@@ -1,0 +1,20 @@
+receivers:
+
+   filelog:
+      include: [ /var/log/*.txt ]
+
+exporters:
+
+   awskinesis:
+      aws:
+         stream_name: otelpoc
+         region: ap-southeast-2
+         role: arn:aws:iam::232967915117:role/otelpoc
+      encoding:
+         name: otlp_json
+
+service:
+   pipelines:
+      logs:
+         receivers: [filelog]
+         exporters: [awskinesis]
