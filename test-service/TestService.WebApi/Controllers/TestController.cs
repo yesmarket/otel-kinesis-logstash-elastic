@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Prometheus;
 
 namespace TestService.WebApi.Controllers
 {
@@ -9,6 +10,8 @@ namespace TestService.WebApi.Controllers
    public class TestController : ControllerBase
    {
       private readonly ILogger<TestController> _logger;
+
+      private static readonly Counter RequestCounter = Metrics.CreateCounter("requests_total", "Number of requests.");
 
       public TestController(
          ILogger<TestController> logger)
@@ -21,6 +24,8 @@ namespace TestService.WebApi.Controllers
       {
           _logger.LogInformation($"Called {nameof(Get)}");
 
+          RequestCounter.Inc();
+
           return Ok();
       }
 
@@ -28,6 +33,8 @@ namespace TestService.WebApi.Controllers
       public IActionResult Post()
       {
          _logger.LogInformation($"Called {nameof(Post)}");
+
+         RequestCounter.Inc();
 
          return Ok();
       }

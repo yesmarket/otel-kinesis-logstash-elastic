@@ -1,19 +1,38 @@
 receivers:
 
-   filelog:
-      include: [ /var/log/*.txt ]
+  filelog:
+    include: [ /var/log/*.txt ]
+
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: "test-metrics"
+          scrape_interval: 10s
+          static_configs:
+            - targets: [ 'test:5001' ]
+
+  # otlp:
+  #   protocols:
+  #     grpc:
+  #     http:
 
 exporters:
 
-   awskinesis:
-      aws:
-         stream_name: otelpoc
-         region: ap-southeast-2
-      encoding:
-         name: otlp_json
+  awskinesis:
+    aws:
+      stream_name: otelpoc
+      region: ap-southeast-2
+    encoding:
+      name: otlp_json
 
 service:
-   pipelines:
-      logs:
-         receivers: [filelog]
-         exporters: [awskinesis]
+  pipelines:
+    logs:
+      receivers: [filelog]
+      exporters: [awskinesis]
+    metrics:
+      receivers: [prometheus]
+      exporters: [awskinesis]
+    # traces:
+    #   receivers: [otlp]
+    #   exporters: [awskinesis]

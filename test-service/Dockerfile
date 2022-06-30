@@ -1,4 +1,13 @@
-FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+FROM alpine:3.10 AS tracer
+
+WORKDIR /tmp
+
+RUN apk --update add wget unzip
+RUN wget https://github.com/open-telemetry/opentelemetry-dotnet-instrumentation/releases/download/v0.1.0-beta.1/opentelemetry-dotnet-instrumentation-linux-glibc.zip
+RUN unzip -q opentelemetry-dotnet-instrumentation-linux-glibc.zip
+RUN rm opentelemetry-dotnet-instrumentation-linux-glibc.zip
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /tmp
 
@@ -12,7 +21,7 @@ COPY . ./
 
 RUN dotnet publish ./TestService.WebApi/TestService.WebApi.csproj -c Release --self-contained false -o /opt/TestService.WebApi
 
-FROM mcr.microsoft.com/dotnet/aspnet:3.1 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 
 ARG CONFIG_DIR=/etc/opt/TestService.WebApi/
 ENV ASPNETCORE_URLS=http://*:5001
@@ -22,6 +31,23 @@ EXPOSE 5001
 
 COPY --from=build /opt/TestService.WebApi/ /opt/TestService.WebApi/
 COPY --from=build /opt/TestService.WebApi/appsettings*.json $CONFIG_DIR
+
+RUN mkdir -p /opt/opentelemetry && \
+    mkdir -p /var/log/opentelemetry/dotnet && \
+    chmod a+rwx /var/log/opentelemetry/dotnet
+
+COPY --from=tracer /tmp/ /opt/opentelemetry/
+
+ENV CORECLR_ENABLE_PROFILING=1 \
+    CORECLR_PROFILER={918728DD-259F-4A6A-AC2B-B85E1B658318} \
+    CORECLR_PROFILER_PATH=/opt/opentelemetry/OpenTelemetry.AutoInstrumentation.Native.so \
+    DOTNET_ADDITIONAL_DEPS=/opt/opentelemetry/AdditionalDeps \
+    DOTNET_SHARED_STORE=/opt/opentelemetry/store \
+    DOTNET_STARTUP_HOOKS=/opt/opentelemetry/netcoreapp3.1/OpenTelemetry.AutoInstrumentation.StartupHook.dll \
+    OTEL_DOTNET_AUTO_HOME=/opt/opentelemetry \
+    OTEL_DOTNET_AUTO_INTEGRATIONS_FILE=/opt/opentelemetry/integrations.json \
+    OTEL_SERVICE_NAME=test \
+    OTEL_TRACES_EXPORTER=otlp
 
 WORKDIR /opt/TestService.WebApi
 
