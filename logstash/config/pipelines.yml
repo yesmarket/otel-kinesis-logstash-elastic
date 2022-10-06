@@ -1,2 +1,4 @@
-- pipeline.id: apps
-  path.config: "/usr/share/logstash/pipeline/apps.conf"
+- pipeline.id: kinesis
+  path.config: "/usr/share/logstash/pipeline/kinesis.conf"
+# - pipeline.id: elf
+#   path.config: "/usr/share/logstash/pipeline/elf.conf"
