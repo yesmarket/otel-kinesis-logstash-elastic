@@ -1,0 +1,33 @@
+receivers:
+
+   filelog:
+      include: [ /var/log/*.txt ]
+
+   otlp:
+      protocols:
+         http:
+         grpc:
+
+exporters:
+
+   elasticsearch/logs:
+      endpoints: [https://poc-kinesis.es.ap-southeast-2.aws.found.io]
+      # endpoints: [https://eoaj6ehaytqklbq.m.pipedream.net]
+      # cloudid: POC-Kinesis:YXAtc291dGhlYXN0LTIuYXdzLmZvdW5kLmlvOjQ0MyQ5ZTc2MGYzYTRmMWQ0NWExYjNjNGY1MDMwNTg2YzEzNiQyMWM3MjIyN2QxY2Q0NDlhYTA4YmZkN2I0OTBjYWY4Mg==
+      api_key: LUVrQTM0Y0IzUG16Z3lCYmczeEo6alFWUGFfajhRak94cUtSVEJFVTBzZw==
+      logs_index: ryan-index-001
+
+   # elasticsearch/traces:
+   #    endpoints: [https://poc-kinesis.apm.ap-southeast-2.aws.found.io]
+   #    #cloudid: ${env:ELASTICSEARCH_CLOUD_ID}
+   #    api_key: ${env:ELASTICSEARCH_API_KEY}
+   #    traces_index: ryan-trace-index-001
+
+service:
+   pipelines:
+      logs:
+         receivers: [filelog]
+         exporters: [elasticsearch/logs]
+      # traces:
+      #    receivers: [otlp]
+      #    exporters: [elasticsearch/traces]

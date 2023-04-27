@@ -1,4 +1,5 @@
 FROM localstack/localstack
 
-COPY ./cfg .
-RUN chmod +x ./wait-for-it.sh ./create-kinesis-stream.sh
+RUN mkdir -p /etc/localstack/init/ready.d
+COPY ./init-aws.sh /etc/localstack/init/ready.d/
+RUN chmod +x /etc/localstack/init/ready.d/init-aws.sh

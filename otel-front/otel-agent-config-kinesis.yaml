@@ -1,0 +1,36 @@
+receivers:
+
+  filelog:
+    include: [ /var/log/*.txt ]
+
+  otlp:
+    protocols:
+      http:
+      grpc:
+
+exporters:
+
+  awskinesis/logs:
+    aws:
+      kinesis_endpoint: ${env:LOCALSTACK_ENDPOINT_URL}
+      stream_name: logs
+      region: us-east-1
+    encoding:
+      name: otlp_json
+
+  awskinesis/traces:
+    aws:
+      kinesis_endpoint: ${env:LOCALSTACK_ENDPOINT_URL}
+      stream_name: traces
+      region: us-east-1
+    encoding:
+      name: otlp_proto
+
+service:
+  pipelines:
+    logs:
+      receivers: [filelog]
+      exporters: [awskinesis/logs]
+    traces:
+      receivers: [otlp]
+      exporters: [awskinesis/traces]

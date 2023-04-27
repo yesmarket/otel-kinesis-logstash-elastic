@@ -9,59 +9,84 @@ volumes:
    localstack-data: {}
 
 services:
-   # elasticsearch:
-   #    build:
-   #       context: elasticsearch/
-   #    hostname: elasticsearch
-   #    container_name: elasticsearch
-   #    volumes:
-   #       - elasticsearch-data:/usr/share/elasticsearch/data
-   #    restart: unless-stopped
-   #    environment:
-   #       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-   #    ports:
-   #       - 9200:9200
-   #       - 9300:9300
-   #    networks:
-   #       - skynet
 
-   # test:
-   #    build:
-   #       context: test-service/
-   #    hostname: test
-   #    container_name: test
-   #    ports:
-   #       - 5001:5001
-   #    volumes:
-   #       - logs:/var/log
-   #    networks:
-   #       - skynet
+   node-bff:
+      build:
+         context: demo-apps/node-bff/
+      hostname: node-bff
+      container_name: node-bff
+      ports:
+         - 5000:5000
+      environment:
+         NODE_ENV: "test"
+         OTEL_SERVICE_NAME: "node-bff"
+         OTEL_SERVICE_VERSION: "1.0.0"
+         COLLECTOR_OPTIONS: $COLLECTOR_OPTIONS_AGENT_KINESIS
+         HOST_DOMAIN: $HOST_DOMAIN
+      networks:
+         - skynet
 
-   # otel:
-   #    build:
-   #       context: otel/
-   #    hostname: otel
-   #    container_name: otel
-   #    environment:
-   #       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-   #       AWS_SECRET_KEY: $AWS_SECRET_KEY
-   #       AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
-   #    restart: always
-   #    ports:
-   #       - 4317:4317
-   #       - 4318:4318
-   #       - 6831:6831
-   #       - 8126:8126
-   #       - 14268:14268
-   #    volumes:
-   #       - logs:/var/log
-   #    networks:
-   #       - skynet
-   #    depends_on:
-   #       - test
+   java-api:
+      build:
+         context: demo-apps/java-api/
+      hostname: java-api
+      container_name: java-api
+      ports:
+         - 5001:5001
+      environment:
+         OTEL_SERVICE_NAME: "java-api"
+         OTEL_SERVICE_VERSION: "1.0.0"
+         OTEL_TRACES_EXPORTER: "otlp"
+         OTEL_METRICS_EXPORTER: "none"
+         OTEL_EXPORTER_OTLP_ENDPOINT: $OTEL_EXPORTER_OTLP_ENDPOINT_AGENT_GRPC_KINESIS
+      networks:
+         - skynet
+
+   dotnet-api:
+      build:
+         context: demo-apps/dotnet-api/
+      hostname: dotnet-api
+      container_name: dotnet-api
+      ports:
+         - 5002:5002
+      environment:
+         ENVIRONMENT: "test"
+         OTEL_TRACES_EXPORTER: "otlp"
+         OTEL_METRICS_EXPORTER: "none"
+         OTEL_EXPORTER_OTLP_ENDPOINT: $OTEL_EXPORTER_OTLP_ENDPOINT_AGENT_HTTP_KINESIS
+         OTEL_RESOURCE_ATTRIBUTES: "service.name=dotnet-api,service.version=1.0.0"
+      volumes:
+         - logs:/var/log
+      networks:
+         - skynet
+
+   otel-front-kinesis:
+      build:
+         context: otel-front/
+         args:
+            OTEL_AGENT_CONFIG: "./otel-agent-config-kinesis.yaml"
+      hostname: otel-front-kinesis
+      container_name: otel-front-kinesis
+      environment:
+         AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+         AWS_SECRET_KEY: $AWS_SECRET_KEY
+         AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
+         LOCALSTACK_ENDPOINT_URL: $LOCALSTACK_ENDPOINT_URL
+      restart: always
+      ports:
+         - 4317:4317
+         - 4318:4318
+         - 6831:6831
+         - 8126:8126
+         - 14268:14268
+      volumes:
+         - logs:/var/log
+      networks:
+         - skynet
+      depends_on:
+         - localstack
 
    localstack:
-      #image: localstack/localstack
       build:
          context: localstack/
       hostname: localstack
@@ -70,69 +95,28 @@ services:
          - 4566:4566
          - 4510-4559:4510-4559
       environment:
-         - SERVICES=kinesis,dynamodb
-         - DEBUG=1
-         - DOCKER_HOST=unix:///var/run/docker.sock
-         #- DEFAULT_REGION=us-west-2
-         - AWS_ACCESS_KEY_ID=dummyaccess
-         - AWS_SECRET_ACCESS_KEY=dummysecret
-         - AWS_DEFAULT_REGION=eu-west-1
-      command:
-         [
-            "./wait-for-it.sh",
-            "192.168.99.106:4566",
-            "--",
-            "./create-kinesis-stream.sh",
-         ]
+         DEBUG: 1
+         DOCKER_HOST: "unix:///var/run/docker.sock"
+         ELASTICSEARCH_CLOUD_ID: $ELASTICSEARCH_CLOUD_ID
+         ELASTICSEARCH_API_KEY: $ELASTICSEARCH_API_KEY
       volumes:
-         - localstack-data:/tmp/localstack
+         - localstack-data:/var/lib/localstack
          - /var/run/docker.sock:/var/run/docker.sock
       networks:
          - skynet
 
-   # awslocal:
-   #    image: mesosphere/aws-cli
-   #    hostname: awslocal
-   #    environment:
-   #       - AWS_ACCESS_KEY_ID=dummy
-   #       - AWS_SECRET_ACCESS_KEY=dummy
-   #       - AWS_DEFAULT_REGION=us-west-2
-   #    entrypoint: /bin/sh -c
-   #    command: >
-   #       "
-   #          sleep 10;
-
-   #          aws --endpoint-url=http://192.168.99.106:4566 kinesis create-stream --stream-name ryantestotelpoc --shard-count 1
-   #       "
-   #    networks:
-   #       - skynet
-   #    depends_on:
-   #       - localstack
-   #       - elasticsearch
-
-   # logstash:
-   #    build:
-   #       context: logstash/
-   #    container_name: logstash
-   #    environment:
-   #       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-   #       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
-   #       AWS_SECRET_KEY: $AWS_SECRET_KEY
-   #       AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
-   #    networks:
-   #       - skynet
-   #    depends_on:
-   #       - elasticsearch
-
-   # kibana:
-   #    build:
-   #       context: kibana/
-   #    hostname: kibana
-   #    container_name: kibana
-   #    restart: unless-stopped
-   #    ports:
-   #       - 5601:5601
-   #    networks:
-   #       - skynet
-   #    depends_on:
-   #       - elasticsearch
+   logstash:
+      build:
+         context: logstash/
+      container_name: logstash
+      ports:
+         - 8081:8081
+         - 8082:8082
+      environment:
+         LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+         ELASTICSEARCH_CLOUD_ID: $ELASTICSEARCH_CLOUD_ID
+         ELASTICSEARCH_API_KEY: $ELASTICSEARCH_API_KEY
+      networks:
+         - skynet
+      depends_on:
+         - localstack
