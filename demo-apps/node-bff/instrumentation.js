@@ -9,14 +9,14 @@ const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumenta
 
 require('dotenv').config()
 
-// console.log(process.env.COLLECTOR_OPTIONS)
-// console.log(process.env.OTEL_SERVICE_NAME)
-// console.log(process.env.OTEL_SERVICE_VERSION)
-// console.log(process.env.NODE_ENV)
+console.log(process.env.COLLECTOR_OPTIONS)
+console.log(process.env.OTEL_SERVICE_NAME)
+console.log(process.env.OTEL_SERVICE_VERSION)
+console.log(process.env.NODE_ENV)
 
 const collectorOptions = JSON.parse(process.env.COLLECTOR_OPTIONS);
 
-// console.log(collectorOptions)
+console.log(collectorOptions)
 
 const sdk = new NodeSDK({
    resource: new Resource({

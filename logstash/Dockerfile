@@ -1,4 +1,4 @@
-FROM jruby as build
+FROM jruby:9.2-jdk11 as build
 
 RUN apt-get update && apt-get install -y vim netbase
 
@@ -6,21 +6,21 @@ RUN wget https://artifacts.elastic.co/downloads/logstash/logstash-8.7.1-linux-x8
     tar -xzvf ./logstash-8.7.1-linux-x86_64.tar.gz -C /usr/share && \
     mv /usr/share/logstash-8.7.1/ /usr/share/logstash/
 
-# if need older version:
-# https://artifacts.elastic.co/downloads/logstash/logstash-6.7.2.tar.gz
-
-RUN LOGSTASH_PATH=/usr/share/logstash && export LOGSTASH_PATH
+ENV LOGSTASH_PATH=/usr/share/logstash
 
 RUN mkdir -p /usr/src/logstash-output-elasticapm
 COPY ./logstash-output-elasticapm /usr/src/logstash-output-elasticapm
 
-RUN cd /usr/src/logstash-output-elasticapm && bundle install
+RUN cd /usr/src/logstash-output-elasticapm && \
+    gem update --system 3.2.3 && \
+    bundle install
 
-#gem build logstash-filter-awesome.gemspec
+#RUN bundle exec rspec
 
+# RUN cd /usr/src/logstash-output-elasticapm && \
+#     gem build logstash-output-elasticapm.gemspec
 
-
-# FROM docker.elastic.co/logstash/logstash:8.7.0 as runtime
+# FROM docker.elastic.co/logstash/logstash:8.7.1 as runtime
 
 # USER root
 
@@ -31,9 +31,8 @@ RUN cd /usr/src/logstash-output-elasticapm && bundle install
 
 # #RUN logstash-plugin install logstash-input-kinesis
 
-# RUN mkdir tmp
-# COPY --from=build --chown=logstash:logstash /usr/src/logstash-output-elasticapm/logstash-output-elasticapm-0.2.0.gem ./tmp/
-# RUN logstash-plugin install ./tmp/logstash-output-elasticapm-0.2.0.gem
+# COPY --from=build --chown=logstash:logstash /usr/src/logstash-output-elasticapm/logstash-output-elasticapm-0.2.0.gem /tmp/
+# RUN logstash-plugin install /tmp/logstash-output-elasticapm-0.2.0.gem
 
 # COPY ./config/logstash.yml ./config/pipelines.yml /usr/share/logstash/config/
 # COPY ./pipeline/logs.conf /usr/share/logstash/pipeline/logs.conf

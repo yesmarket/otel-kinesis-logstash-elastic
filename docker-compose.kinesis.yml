@@ -5,7 +5,6 @@ networks:
 
 volumes:
    logs: {}
-   elasticsearch-data: {}
    localstack-data: {}
 
 services:
@@ -97,8 +96,6 @@ services:
       environment:
          DEBUG: 1
          DOCKER_HOST: "unix:///var/run/docker.sock"
-         ELASTICSEARCH_CLOUD_ID: $ELASTICSEARCH_CLOUD_ID
-         ELASTICSEARCH_API_KEY: $ELASTICSEARCH_API_KEY
       volumes:
          - localstack-data:/var/lib/localstack
          - /var/run/docker.sock:/var/run/docker.sock
