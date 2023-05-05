@@ -50,10 +50,10 @@ There are several integration pipelines through to Elastic with each having a se
 
 | type | pipeline | working |
 | :--- | :--- | :---: |
-| logs | `microservices (serilog console sink) -> file <- (file reciever) otel collector agent (elasticsearch exporter) -> elasticsearch ingest pipeline -> elasticsearch` | no |
-| metrics (java-api) | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc receiver) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | no |
-| metrics (dotnet-api) | `microservices (prometheus endpoint) <- (prometheus reciever) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | no |
-| traces | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | no |
+| logs | `microservices (serilog console sink) -> file <- (file reciever) otel collector agent (elasticsearch exporter) -> elasticsearch ingest pipeline -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236389448-71505ef6-d7d7-4cd3-acc0-e549de122f47.png" height="20" width="20" /> |
+| metrics (java-api) | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc receiver) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236389448-71505ef6-d7d7-4cd3-acc0-e549de122f47.png" height="20" width="20" /> |
+| metrics (dotnet-api) | `microservices (prometheus endpoint) <- (prometheus reciever) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236389448-71505ef6-d7d7-4cd3-acc0-e549de122f47.png" height="20" width="20" /> |
+| traces | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236389448-71505ef6-d7d7-4cd3-acc0-e549de122f47.png" height="20" width="20" /> |
 
 Note: ^^ these aren't working!
 
@@ -62,9 +62,6 @@ Note: ^^ these aren't working!
 | type | pipeline | working |
 | :--- | :--- | :---: |
 | logs | `microservices (serilog console sink) -> file <- (file reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- (kinesis input) Logstash (elasticsearch output) -> elasticsearch ingest pipeline -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
-| metrics (java-api) | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc receiver) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | no |
-| metrics (dotnet-api) | `microservices (prometheus endpoint) <- (prometheus reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | no |
+| metrics (java-api) | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc receiver) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236389448-71505ef6-d7d7-4cd3-acc0-e549de122f47.png" height="20" width="20" /> |
+| metrics (dotnet-api) | `microservices (prometheus endpoint) <- (prometheus reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236389448-71505ef6-d7d7-4cd3-acc0-e549de122f47.png" height="20" width="20" /> |
 | traces | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
-
-
-
