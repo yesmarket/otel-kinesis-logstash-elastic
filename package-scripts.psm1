@@ -55,13 +55,40 @@ function Clean-Docker {
 
 function Clean-Docker2 {
    Param(
-      [string]$images='otel'
+      [string]$images='dotnet-api,otel-front,localstack,otel-back,logstash'
    )
    Clean-Docker -containers $true -volumes $true -networks $true -images $false
    if ($images -And (docker image ls -a -q)) {
       $arr = $images.Split(",")
-      $arr | ForEach-Object { iex "docker rmi -f otel-poc_$_" }
+      $arr | ForEach-Object { iex "docker rmi -f otel-kinesis-logstash-elastic_$_" }
    }
+}
+
+function Get-KinesisDataStreamRecords {
+   Param(
+      [string]$streamName='traces',
+      [string]$endpointUrl='http://192.168.99.106:4566'
+   )
+   $describeStream = awslocal --endpoint-url=$endpointUrl kinesis describe-stream --stream-name $streamName | ConvertFrom-Json
+   $getShardIterator = awslocal --endpoint-url=$endpointUrl kinesis get-shard-iterator --stream-name $streamName --shard-id $describeStream.StreamDescription.Shards[0].ShardId --shard-iterator-type TRIM_HORIZON | ConvertFrom-Json
+   $getRecords = awslocal --endpoint-url=$endpointUrl kinesis get-records --shard-iterator $getShardIterator.ShardIterator | ConvertFrom-Json
+   echo $getRecords.Records
+}
+
+function List-KinesisDataStreams {
+   Param(
+      [string]$endpointUrl='http://192.168.99.106:4566'
+   )
+   $listStreams = awslocal --endpoint-url=$endpointUrl kinesis list-streams | ConvertFrom-Json
+   $listStreams.StreamNames
+}
+
+function List-KinesisDeliveryStreams {
+   Param(
+      [string]$endpointUrl='http://192.168.99.106:4566'
+   )
+   $listDeliveryStreams = awslocal --endpoint-url=$endpointUrl firehose list-delivery-streams | ConvertFrom-Json
+   $listDeliveryStreams.DeliveryStreamNames
 }
 
 $otel_module = $MyInvocation.MyCommand.ScriptBlock.Module

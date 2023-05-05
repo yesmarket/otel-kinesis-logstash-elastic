@@ -1,0 +1,79 @@
+logging:
+   level:
+      root: DEBUG
+
+management:
+   endpoints:
+      enabled-by-default: false
+      web:
+         exposure:
+            include: auditevents, beans, configprops, health, loggers, metrics, mappings, prometheus
+   endpoint:
+      auditevents:
+         enabled: true
+      beans:
+         enabled: true
+      configprops:
+         enabled: true
+      health:
+         enabled: true
+         probes:
+            enabled: true
+            add-additional-paths: true
+      loggers:
+         enabled: true
+      metrics:
+         enabled: true
+      mappings:
+         enabled: true
+      prometheus:
+         enabled: true
+   health:
+      defaults:
+         enabled: true
+   defaults:
+      metrics:
+         export:
+            enabled: true
+   prometheus:
+      metrics:
+         export:
+            enabled: true
+   otlp:
+      metrics:
+         export:
+            enabled: false
+            step: 1m
+            url: "https://otlp-front:4318"
+            resource-attributes:
+               service.name: "java-api"
+   tracing:
+      enabled: true
+      sampling:
+         probability: 1.0f
+
+otel:
+   exporter:
+      otlp:
+         endpoint: "https://otlp-front:4318"
+   service:
+      name: "java-api"
+      version: "1.0.0"
+   traces:
+      exporter: "otlp"
+   metrics:
+      exporter: "otlp"
+
+server:
+   error:
+      include-stacktrace: always
+      include-exception: true
+      include-message: always
+      include-binding-errors: always
+   port: 5001
+   servlet:
+      context-path: /
+
+spring:
+   application:
+      name: "java-api"

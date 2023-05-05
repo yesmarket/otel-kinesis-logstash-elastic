@@ -1,2 +1,3 @@
 .env filter=git-crypt diff=git-crypt
+demo-apps/**/.env filter=git-crypt diff=git-crypt
 .gitattributes !filter !diff

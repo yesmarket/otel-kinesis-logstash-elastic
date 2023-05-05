@@ -1,0 +1,20 @@
+{
+   "$schema": "https://json.schemastore.org/launchsettings.json",
+   "profiles": {
+      "Development": {
+         "commandName": "Project",
+         "dotnetRunMessages": true,
+         "launchBrowser": true,
+         "launchUrl": "swagger",
+         "applicationUrl": "http://localhost:5002",
+         "environmentVariables": {
+            "ENVIRONMENT": "dev",
+            "ASPNETCORE_ENVIRONMENT": "dev",
+            "OTEL_EXPORTER_OTLP_ENDPOINT": "https://otlp-front:4318",
+            "OTEL_METRICS_EXPORTER": "otlp",
+            "OTEL_LOGS_EXPORTER": "otlp",
+            "OTEL_RESOURCE_ATTRIBUTES": "service.name=dotnet-api,service.version=1.0.0,deployment.environment=dev"
+         }
+      }
+   }
+}
