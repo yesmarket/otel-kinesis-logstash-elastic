@@ -8,14 +8,14 @@ receivers:
          http:
          grpc:
 
-   # prometheus:
-   #    config:
-   #       scrape_configs:
-   #          - job_name: 'dotnet'
-   #             scrape_interval: 1m
-   #             metrics_path:
-   #             static_configs:
-   #                - targets: ['dotnet-api:5002']
+   prometheus:
+      config:
+         scrape_configs:
+            - job_name: 'dotnet'
+               scrape_interval: 1m
+               metrics_path:
+               static_configs:
+                  - targets: ['dotnet-api:5002']
 
 exporters:
 
@@ -27,13 +27,13 @@ exporters:
       encoding:
          name: otlp_json
 
-   # awskinesis/metrics:
-   #    aws:
-   #       kinesis_endpoint: ${env:LOCALSTACK_ENDPOINT_URL}
-   #       stream_name: metrics
-   #       region: us-east-1
-   #    encoding:
-   #       name: otlp_proto
+   awskinesis/metrics:
+      aws:
+         kinesis_endpoint: ${env:LOCALSTACK_ENDPOINT_URL}
+         stream_name: metrics
+         region: us-east-1
+      encoding:
+         name: otlp_proto
 
    awskinesis/traces:
       aws:
@@ -48,12 +48,12 @@ service:
       logs:
          receivers: [filelog]
          exporters: [awskinesis/logs]
-      # metrics/otlp:
-      #    receivers: [otlp]
-      #    exporters: [awskinesis/metrics]
-      # metrics/prometheus:
-      #    receivers: [prometheus]
-      #    exporters: [awskinesis/metrics]
+      metrics/otlp:
+         receivers: [otlp]
+         exporters: [awskinesis/metrics]
+      metrics/prometheus:
+         receivers: [prometheus]
+         exporters: [awskinesis/metrics]
       traces:
          receivers: [otlp]
          exporters: [awskinesis/traces]

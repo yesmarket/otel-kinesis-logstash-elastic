@@ -1,6 +1,6 @@
 # Overview
 
-The aim of this project is to build a telemetry pipeline POC that specifically uses the Open Telemetry (OTEL) collector agent to get logs, metrics, and traces from some dummy microservices (dotnet, java, and node.js) to a AWS Kinesis streaming layer and then through to Elasticsearch via Logstash.
+The aim of this project is to build a telemetry pipeline POC that specifically uses the Open Telemetry (OTEL) collector agent to get logs, metrics, and traces from some dummy microservices (dotnet, java, and node.js) to an AWS Kinesis streaming layer (using localstack) and finally through to Elasticsearch (Elastic Cloud) via Logstash.
 
 # Pre-requisites
 
@@ -13,11 +13,11 @@ The aim of this project is to build a telemetry pipeline POC that specifically u
 
 ## optional
 
-* PowerShell (for some useful helper commands)
-* dotnet core (for the ./demo-apps/dotnet-api)
-* Java (for ./demo-apps/java-api)
-* node.js (for ./demo-apps/node-bff)
-* Ruby (for logstash plugins i.e. logstash-output-elasticapm and logstash-input-kinesis)
+* PowerShell (for some helper commands)
+* dotnet core (if you intend to modify ./demo-apps/dotnet-api)
+* Java (if you intend to modify ./demo-apps/java-api)
+* node.js (if you intend to modify ./demo-apps/node-bff)
+* Ruby (if you intend to modify the logstash-output-elasticapm plugin)
 
 # getting started
 
@@ -39,14 +39,14 @@ Obviously replace `{compose-file}` with the specific compose file you want to ru
 
 There are several integration pipelines through to Elastic with each having a separate docker-compose file.
 
-## direct
+## docker-compose.direct.yml
 
 | type | pipeline | working |
 | --- | --- | --- |
-| metrics (java-api) | `microservices (opentelemetry agent grpc/otlp exporter) -> elastic apm -> elasticsearch` | yes |
-| traces | `microservices (opentelemetry agent grpc/otlp exporter) -> elastic apm -> elasticsearch` | yes |
+| metrics (java-api) | `microservices (opentelemetry agent grpc/otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
+| traces | `microservices (opentelemetry agent grpc/otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
 
-## otel
+## docker-compose.otel.yml
 
 | type | pipeline | working |
 | --- | --- | --- |
@@ -57,13 +57,14 @@ There are several integration pipelines through to Elastic with each having a se
 
 Note: ^^ these aren't working!
 
-## kinesis
+## docker-compose.kinesis.yml
 
 | type | pipeline | working |
 | --- | --- | --- |
-| logs | `microservices (serilog console sink) -> file <- (file reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- (kinesis input) Logstash (elasticsearch output) -> elasticsearch ingest pipeline -> elasticsearch` | yes |
+| logs | `microservices (serilog console sink) -> file <- (file reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- (kinesis input) Logstash (elasticsearch output) -> elasticsearch ingest pipeline -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
 | metrics (java-api) | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc receiver) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | no |
 | metrics (dotnet-api) | `microservices (prometheus endpoint) <- (prometheus reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | no |
-| traces | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | yes |
+| traces | `microservices (opentelemetry agent grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (awskinesis exporter) -> kinesis data stream <- kinesis delivery stream -> (http input) Logstash (elasticapm output) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
+
 
 

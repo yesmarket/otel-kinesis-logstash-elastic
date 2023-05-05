@@ -35,7 +35,9 @@ RUN logstash-plugin install /tmp/logstash-output-elasticapm-0.2.0.gem
 
 COPY ./config/logstash.yml ./config/pipelines.yml /usr/share/logstash/config/
 COPY ./pipeline/logs.conf /usr/share/logstash/pipeline/logs.conf
+COPY ./pipeline/metrics.conf /usr/share/logstash/pipeline/metrics.conf
 COPY ./pipeline/traces.conf /usr/share/logstash/pipeline/traces.conf
 
 EXPOSE 8081
 EXPOSE 8082
+EXPOSE 8083

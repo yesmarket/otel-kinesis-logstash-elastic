@@ -1,6 +1,3 @@
 [submodule "logstash/logstash-output-elasticapm"]
 	path = logstash/logstash-output-elasticapm
 	url = https://github.com/yesmarket/logstash-input-kinesis.git
-[submodule "logstash/logstash-input-kinesis"]
-	path = logstash/logstash-input-kinesis
-	url = https://github.com/yesmarket/logstash-input-kinesis.git

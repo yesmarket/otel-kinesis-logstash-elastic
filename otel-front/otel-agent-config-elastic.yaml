@@ -11,11 +11,14 @@ receivers:
 exporters:
 
    elasticsearch/logs:
+      cloudid: "${env:ELASTICSEARCH_CLOUD_ID}"
       endpoints: ["${env:ELASTICSEARCH_ENDPOINT}"]
       api_key: "${env:ELASTICSEARCH_API_KEY}"
+      pipeline: logs
       logs_index: ryan-index-001
 
    elasticsearch/traces:
+      cloudid: "${env:ELASTICSEARCH_CLOUD_ID}"
       endpoints: ["${env:ELASTICAPM_ENDPOINT}"]
       api_key: "${env:ELASTICSEARCH_API_KEY}"
       traces_index: ryan-trace-index-001

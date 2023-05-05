@@ -1,4 +1,6 @@
 - pipeline.id: logs
   path.config: "/usr/share/logstash/pipeline/logs.conf"
+- pipeline.id: metrics
+  path.config: "/usr/share/logstash/pipeline/metrics.conf"
 - pipeline.id: traces
   path.config: "/usr/share/logstash/pipeline/traces.conf"
