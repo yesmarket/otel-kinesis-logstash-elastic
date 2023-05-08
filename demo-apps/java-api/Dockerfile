@@ -12,7 +12,7 @@ FROM amazoncorretto:17-alpine-jdk AS runtime
 
 EXPOSE 5001/tcp
 
-RUN addgroup -S jag && adduser -S ja -G jag
+RUN addgroup -S jag && adduser -S ja -G jag && chown -R ja:jag /var/log/
 
 RUN mkdir -p /opt/java-api
 COPY --from=build --chown=ja:jag /tmp/opentelemetry-javaagent.jar /opt/java-api/

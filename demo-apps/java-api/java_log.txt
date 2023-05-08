@@ -1,0 +1,85 @@
+{
+  "timestamp" : "2023-05-08T12:25:46.280Z",
+  "level" : "INFO",
+  "thread" : "main",
+  "logger" : "com.demo.javaapi.JavaApiApplicationTests",
+  "message" : "Starting JavaApiApplicationTests using Java 17.0.4.1 with PID 10556 (started by User in C:\\git\\okle\\demo-apps\\java-api)",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:46.301Z",
+  "level" : "DEBUG",
+  "thread" : "main",
+  "logger" : "com.demo.javaapi.JavaApiApplicationTests",
+  "message" : "Running with Spring Boot v3.0.6, Spring v6.0.8",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:46.303Z",
+  "level" : "INFO",
+  "thread" : "main",
+  "logger" : "com.demo.javaapi.JavaApiApplicationTests",
+  "message" : "The following 1 profile is active: \"dev\"",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:47.614Z",
+  "level" : "INFO",
+  "thread" : "main",
+  "logger" : "org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker",
+  "message" : "Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:47.733Z",
+  "level" : "INFO",
+  "thread" : "main",
+  "logger" : "org.springframework.ws.soap.addressing.server.AnnotationActionEndpointMapping",
+  "message" : "Supporting [WS-Addressing August 2004, WS-Addressing 1.0]",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:48.366Z",
+  "level" : "DEBUG",
+  "thread" : "main",
+  "logger" : "_org.springframework.web.servlet.HandlerMapping.Mappings",
+  "message" : "\n\tc.d.j.c.StudentController:\n\t{GET [/api/v1/students/{id}]}: get(String)",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:48.371Z",
+  "level" : "DEBUG",
+  "thread" : "main",
+  "logger" : "_org.springframework.web.servlet.HandlerMapping.Mappings",
+  "message" : "\n\to.s.b.a.w.s.e.BasicErrorController:\n\t{ [/error]}: error(HttpServletRequest)\n\t{ [/error], produces [text/html]}: errorHtml(HttpServletRequest,HttpServletResponse)",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:48.390Z",
+  "level" : "DEBUG",
+  "thread" : "main",
+  "logger" : "_org.springframework.web.servlet.HandlerMapping.Mappings",
+  "message" : "'beanNameHandlerMapping' {}",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:48.411Z",
+  "level" : "DEBUG",
+  "thread" : "main",
+  "logger" : "_org.springframework.web.servlet.HandlerMapping.Mappings",
+  "message" : "'resourceHandlerMapping' {/webjars/**=ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]], /**=ResourceHttpRequestHandler [classpath [META-INF/resources/], classpath [resources/], classpath [static/], classpath [public/], ServletContext [/]]}",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:48.884Z",
+  "level" : "DEBUG",
+  "thread" : "main",
+  "logger" : "io.micrometer.common.util.internal.logging.InternalLoggerFactory",
+  "message" : "Using SLF4J as the default logging framework",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:49.001Z",
+  "level" : "INFO",
+  "thread" : "main",
+  "logger" : "org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver",
+  "message" : "Exposing 7 endpoint(s) beneath base path '/actuator'",
+  "context" : "default"
+}{
+  "timestamp" : "2023-05-08T12:25:49.067Z",
+  "level" : "INFO",
+  "thread" : "main",
+  "logger" : "com.demo.javaapi.JavaApiApplicationTests",
+  "message" : "Started JavaApiApplicationTests in 3.527 seconds (process running for 4.698)",
+  "context" : "default"
+}

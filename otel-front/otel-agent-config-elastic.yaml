@@ -3,33 +3,64 @@ receivers:
    filelog:
       include: [ /var/log/*.txt ]
 
+   # syslog:
+   #    tcp:
+   #       listen_address: "0.0.0.0:54526"
+   #       protocol: rfc5424
+
    otlp:
       protocols:
          http:
          grpc:
 
+   prometheus:
+      config:
+         scrape_configs:
+            - job_name: 'node-bff'
+              scrape_interval: 1m
+              static_configs:
+                 - targets: ['node-bff:5000']
+            - job_name: 'java-api'
+              scrape_interval: 1m
+              metrics_path: /actuator/prometheus
+              static_configs:
+                 - targets: ['java-api:5001']
+            - job_name: 'dotnet-api'
+              scrape_interval: 1m
+              static_configs:
+                 - targets: ['dotnet-api:5002']
+
 exporters:
 
-# this is not working!!!
+   elasticsearch:
+      cloudid: "${env:OTEL_EXPORTER_ELASTICSEARCH_CLOUD_ID}"
+      endpoints: ["${env:OTEL_EXPORTER_ELASTICSEARCH_ENDPOINT}"]
+      api_key: "${env:OTEL_EXPORTER_ELASTICSEARCH_API_KEY}"
+      traces_index: ryan-index-001
 
-   elasticsearch/logs:
-      cloudid: "${env:ELASTICSEARCH_CLOUD_ID}"
-      # endpoints: ["${env:ELASTICSEARCH_ENDPOINT}"]
-      api_key: "${env:ELASTICSEARCH_API_KEY_ENCODED}"
-      pipeline: logs
-      logs_index: ryan-index-001
+   otlp/metrics:
+      otlp:
+         endpoint: "${env:OTEL_EXPORTER_ELASTICAPM_ENDPOINT}"
+         headers:
+            Authorization: "${env:OTEL_EXPORTER_ELASTICAPM_AUTHORIZATION}"
 
-   elasticsearch/traces:
-      # cloudid: "${env:ELASTICSEARCH_CLOUD_ID}"
-      endpoints: ["https://7e05e6c5b63642ffb2cbf1dbb771ff2d.apm.ap-southeast-2.aws.cloud.es.io:443"]
-      api_key: "${env:ELASTICSEARCH_API_KEY_ENCODED}"
-      # traces_index: ryan-trace-index-001
+   otlp/traces:
+      otlp:
+         endpoint: "${env:OTEL_EXPORTER_ELASTICAPM_ENDPOINT}"
+         headers:
+            Authorization: "${env:OTEL_EXPORTER_ELASTICAPM_AUTHORIZATION}"
 
 service:
    pipelines:
-      logs:
+      logs/dotnet_and_java:
          receivers: [filelog]
-         exporters: [elasticsearch/logs]
+         exporters: [elasticsearch]
+      # logs/node:
+      #    receivers: [syslog]
+      #    exporters: [elasticsearch]
+      metrics:
+         receivers: [prometheus]
+         exporters: [otlp/metrics]
       traces:
          receivers: [otlp]
-         exporters: [elasticsearch/traces]
+         exporters: [otlp/traces]
