@@ -3,6 +3,7 @@ using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Prometheus;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,13 +25,13 @@ builder.Services.AddOpenTelemetry()
       tracerProviderBuilder
          .AddAspNetCoreInstrumentation()
          .AddEntityFrameworkCoreInstrumentation()
-         .AddOtlpExporter(opt => opt.Protocol = OtlpExportProtocol.HttpProtobuf))
-   .WithMetrics(providerBuilder =>
-      providerBuilder
-         .AddAspNetCoreInstrumentation()
-         .AddRuntimeInstrumentation()
-         .AddProcessInstrumentation()
-         .AddOtlpExporter(options => options.Protocol = OtlpExportProtocol.HttpProtobuf));
+         .AddOtlpExporter(opt => opt.Protocol = OtlpExportProtocol.HttpProtobuf));
+   // .WithMetrics(providerBuilder =>
+   //    providerBuilder
+   //       .AddAspNetCoreInstrumentation()
+   //       .AddRuntimeInstrumentation()
+   //       .AddProcessInstrumentation()
+   //       .AddOtlpExporter(options => options.Protocol = OtlpExportProtocol.HttpProtobuf));
 
 
 builder.Services.AddDbContext<SchoolContext>();
@@ -49,7 +50,14 @@ InitializeDatabase(app);
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapControllers();
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+   endpoints.MapMetrics();
+
+   endpoints.MapControllers();
+});
 
 app.Run();
 

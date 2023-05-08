@@ -10,18 +10,20 @@ receivers:
 
 exporters:
 
+# this is not working!!!
+
    elasticsearch/logs:
       cloudid: "${env:ELASTICSEARCH_CLOUD_ID}"
-      endpoints: ["${env:ELASTICSEARCH_ENDPOINT}"]
-      api_key: "${env:ELASTICSEARCH_API_KEY}"
+      # endpoints: ["${env:ELASTICSEARCH_ENDPOINT}"]
+      api_key: "${env:ELASTICSEARCH_API_KEY_ENCODED}"
       pipeline: logs
       logs_index: ryan-index-001
 
    elasticsearch/traces:
-      cloudid: "${env:ELASTICSEARCH_CLOUD_ID}"
-      endpoints: ["${env:ELASTICAPM_ENDPOINT}"]
-      api_key: "${env:ELASTICSEARCH_API_KEY}"
-      traces_index: ryan-trace-index-001
+      # cloudid: "${env:ELASTICSEARCH_CLOUD_ID}"
+      endpoints: ["https://7e05e6c5b63642ffb2cbf1dbb771ff2d.apm.ap-southeast-2.aws.cloud.es.io:443"]
+      api_key: "${env:ELASTICSEARCH_API_KEY_ENCODED}"
+      # traces_index: ryan-trace-index-001
 
 service:
    pipelines:

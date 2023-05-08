@@ -11,11 +11,10 @@ receivers:
    prometheus:
       config:
          scrape_configs:
-            - job_name: 'dotnet'
-               scrape_interval: 1m
-               metrics_path:
-               static_configs:
-                  - targets: ['dotnet-api:5002']
+            - job_name: 'dotnet-api'
+              scrape_interval: 1m
+              static_configs:
+                 - targets: ['dotnet-api:5002']
 
 exporters:
 
@@ -48,10 +47,7 @@ service:
       logs:
          receivers: [filelog]
          exporters: [awskinesis/logs]
-      metrics/otlp:
-         receivers: [otlp]
-         exporters: [awskinesis/metrics]
-      metrics/prometheus:
+      metrics:
          receivers: [prometheus]
          exporters: [awskinesis/metrics]
       traces:
