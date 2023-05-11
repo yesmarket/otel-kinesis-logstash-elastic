@@ -25,13 +25,13 @@ builder.Services.AddOpenTelemetry()
       tracerProviderBuilder
          .AddAspNetCoreInstrumentation()
          .AddEntityFrameworkCoreInstrumentation()
-         .AddOtlpExporter(opt => opt.Protocol = OtlpExportProtocol.HttpProtobuf));
-   // .WithMetrics(providerBuilder =>
-   //    providerBuilder
-   //       .AddAspNetCoreInstrumentation()
-   //       .AddRuntimeInstrumentation()
-   //       .AddProcessInstrumentation()
-   //       .AddOtlpExporter(options => options.Protocol = OtlpExportProtocol.HttpProtobuf));
+         .AddOtlpExporter(opt => opt.Protocol = OtlpExportProtocol.HttpProtobuf))
+   .WithMetrics(providerBuilder =>
+      providerBuilder
+         .AddAspNetCoreInstrumentation()
+         .AddRuntimeInstrumentation()
+         .AddProcessInstrumentation()
+         .AddOtlpExporter(options => options.Protocol = OtlpExportProtocol.HttpProtobuf));
 
 
 builder.Services.AddDbContext<SchoolContext>();
