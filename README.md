@@ -43,8 +43,8 @@ There are several integration pipelines through to Elastic with each having a se
 
 | type | pipeline | working |
 | :--- | :--- | :---: |
-| metrics | `microservices (opentelemetry agent grpc/otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
-| traces | `microservices (opentelemetry agent grpc/otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
+| metrics | `microservices (opentelemetry grpc/otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
+| traces | `microservices (opentelemetry grpc/otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
 
 ## docker-compose.otel.yml
 
@@ -52,11 +52,9 @@ There are several integration pipelines through to Elastic with each having a se
 | :--- | :--- | :---: |
 | file logs | `microservices (dotnet/serilog or java/logback) -> file <- (file reciever) otel collector agent (elasticsearch exporter) -> elasticsearch ingest pipeline -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236389448-71505ef6-d7d7-4cd3-acc0-e549de122f47.png" height="20" width="20" /> |
 | syslog logs | `microservices (node.js/winston with syslog transport) -> (syslog/udp reciever) otel collector agent (elasticsearch exporter) -> elasticsearch ingest pipeline -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
-| prometheus metrics | `microservices (prometheus endpoint) <- (prometheus reciever) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
-| otlp metrics | `microservices (opentelemetry grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
-| otlp traces | `microservices (opentelemetry grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (elasticsearch exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
-
-Note: ^^ these aren't working!
+| prometheus metrics | `microservices (prometheus endpoint) <- (prometheus reciever) otel collector agent (otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
+| otlp metrics | `microservices (opentelemetry grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
+| otlp traces | `microservices (opentelemetry grpc/otlp exporter) -> (otlp/grpc reciever) otel collector agent (otlp exporter) -> elastic apm -> elasticsearch` | <img src="https://user-images.githubusercontent.com/10783372/236388851-0cdbf473-af2c-4090-93b5-1ef597f86b9c.png" height="20" width="20" /> |
 
 ## docker-compose.kinesis.yml
 
