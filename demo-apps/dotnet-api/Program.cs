@@ -1,8 +1,8 @@
 using dotnet_api;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
+// using OpenTelemetry.Exporter;
+// using OpenTelemetry.Metrics;
+// using OpenTelemetry.Resources;
+// using OpenTelemetry.Trace;
 using Prometheus;
 using Serilog;
 
@@ -18,21 +18,20 @@ builder.Configuration.AddEnvironmentVariables();
 
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
-builder.Services.AddOpenTelemetry()
-   .ConfigureResource(resourceBuilder =>
-      resourceBuilder.AddTelemetrySdk())
-   .WithTracing(tracerProviderBuilder =>
-      tracerProviderBuilder
-         .AddAspNetCoreInstrumentation()
-         .AddEntityFrameworkCoreInstrumentation()
-         .AddOtlpExporter(opt => opt.Protocol = OtlpExportProtocol.HttpProtobuf))
-   .WithMetrics(providerBuilder =>
-      providerBuilder
-         .AddAspNetCoreInstrumentation()
-         .AddRuntimeInstrumentation()
-         .AddProcessInstrumentation()
-         .AddOtlpExporter(options => options.Protocol = OtlpExportProtocol.HttpProtobuf));
-
+// builder.Services.AddOpenTelemetry()
+//    .ConfigureResource(resourceBuilder =>
+//       resourceBuilder.AddTelemetrySdk())
+//    .WithTracing(tracerProviderBuilder =>
+//       tracerProviderBuilder
+//          .AddAspNetCoreInstrumentation()
+//          .AddEntityFrameworkCoreInstrumentation()
+//          .AddOtlpExporter(opt => opt.Protocol = OtlpExportProtocol.HttpProtobuf))
+//    .WithMetrics(providerBuilder =>
+//       providerBuilder
+//          .AddAspNetCoreInstrumentation()
+//          .AddRuntimeInstrumentation()
+//          .AddProcessInstrumentation()
+//          .AddOtlpExporter(options => options.Protocol = OtlpExportProtocol.HttpProtobuf));
 
 builder.Services.AddDbContext<SchoolContext>();
 

@@ -5,7 +5,7 @@ const metrics = promBundle({
     includePath: true,
     includeStatusCode: true,
     includeUp: true,
-    customLabels: {project_name: 'hello_world', project_type: 'test_metrics_labels'},
+    customLabels: {project_name: 'node-bff'},
     promClient: {
         collectDefaultMetrics: {
         }

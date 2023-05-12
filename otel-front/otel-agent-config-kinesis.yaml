@@ -1,13 +1,25 @@
 receivers:
 
+   # dotnet and java logs are written to file on shared volume
    filelog:
       include: [ /var/log/*.txt ]
 
+   # node.js logs are getting sent via syslog
+   syslog:
+      udp:
+         listen_address: "0.0.0.0:54526"cd
+      protocol: rfc3164
+      location: UTC
+
+   # traces and java metrics getting sent to otlp endpoint
+   # java is using proto/grpc
+   # dotnet and node are using proto/http
    otlp:
       protocols:
          http:
          grpc:
 
+   # dotnet and node metrics getting scraped via prometheus receiver
    prometheus:
       config:
          scrape_configs:
@@ -15,11 +27,12 @@ receivers:
               scrape_interval: 1m
               static_configs:
                  - targets: ['node-bff:5000']
-            - job_name: 'java-api'
-              scrape_interval: 1m
-              metrics_path: /actuator/prometheus
-              static_configs:
-                 - targets: ['java-api:5001']
+            # Note: Java metrics are getting sent to otlp/grpc endpoint
+            # - job_name: 'java-api'
+            #   scrape_interval: 1m
+            #   metrics_path: /actuator/prometheus
+            #   static_configs:
+            #      - targets: ['java-api:5001']
             - job_name: 'dotnet-api'
               scrape_interval: 1m
               static_configs:
@@ -53,13 +66,18 @@ exporters:
 
 service:
    pipelines:
-      logs:
+      logs/dotnet_and_java:
          receivers: [filelog]
          exporters: [awskinesis/logs]
-      metrics:
+      logs/node:
+         receivers: [syslog]
+         exporters: [awskinesis/logs]
+      metrics/dotnet_and_node:
          receivers: [prometheus]
+         exporters: [awskinesis/metrics]
+      metrics/java:
+         receivers: [otlp]
          exporters: [awskinesis/metrics]
       traces:
          receivers: [otlp]
          exporters: [awskinesis/traces]
-

@@ -1,5 +1,7 @@
 # FROM jruby:9.2-jdk11 as build
 
+# building logstash-output-elasticapm from source
+
 # RUN apt-get update && apt-get install -y vim netbase
 
 # RUN wget https://artifacts.elastic.co/downloads/logstash/logstash-8.7.1-linux-x86_64.tar.gz && \
@@ -30,9 +32,12 @@ USER logstash
 
 RUN logstash-plugin install logstash-input-kinesis
 
+# Copying logstash-output-elasticapm from build container (for when building logstash-output-elasticapm from source)
 # COPY --from=build --chown=logstash:logstash /usr/src/logstash-output-elasticapm/logstash-output-elasticapm-0.2.0.gem /tmp/
 COPY ./logstash-output-elasticapm/logstash-output-elasticapm-0.2.0.gem /tmp/
 RUN logstash-plugin install /tmp/logstash-output-elasticapm-0.2.0.gem
+
+# RUN logstash-plugin install logstash-output-elasticapm
 
 COPY ./config/logstash.yml ./config/pipelines.yml /usr/share/logstash/config/
 COPY ./pipeline/logs.conf /usr/share/logstash/pipeline/logs.conf

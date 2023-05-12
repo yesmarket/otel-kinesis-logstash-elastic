@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace dotnet_api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/[controller]")]
     public class StudentsController : ControllerBase
     {
        private readonly SchoolContext _context;
@@ -15,10 +15,15 @@ namespace dotnet_api.Controllers
            _logger = logger;
         }
 
-        [HttpGet]
-        public IEnumerable<Student> Get()
+        [HttpGet("{id}")]
+        public IEnumerable<Student> Get(int id)
         {
-           _logger.LogInformation(nameof(Get));
+            if (id == 3) {
+               throw new ApplicationException("user with id of 3 is invalid!");
+            }
+
+            // log something unique so I can search for this in Elastic
+           _logger.LogInformation("qwerty12345");
 
            return _context.Students;
         }

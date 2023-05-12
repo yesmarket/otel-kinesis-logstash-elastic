@@ -6,6 +6,7 @@ const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventi
 const { OTLPTraceExporter } =  require('@opentelemetry/exporter-trace-otlp-proto');
 // const { OTLPTraceExporter } =  require('@opentelemetry/exporter-trace-otlp-grpc');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
+require('dotenv').config()
 
 // console.log(process.env.COLLECTOR_OPTIONS)
 // console.log(process.env.OTEL_SERVICE_NAME)

@@ -1,18 +1,25 @@
 receivers:
 
+   # dotnet and java logs are written to file on shared volume
    filelog:
       include: [ /var/log/*.txt ]
 
-   # syslog:
-   #    tcp:
-   #       listen_address: "0.0.0.0:54526"
-   #       protocol: rfc5424
+   # node.js logs are getting sent via syslog
+   syslog:
+      udp:
+         listen_address: "0.0.0.0:54526"
+      protocol: rfc3164
+      location: UTC
 
-   otlp:
+   # traces and java metrics getting sent to otlp endpoint
+   # java is using proto/grpc
+   # dotnet and node are using proto/http
+   otlp/r:
       protocols:
          http:
          grpc:
 
+   # dotnet and node metrics getting scraped via prometheus receiver
    prometheus:
       config:
          scrape_configs:
@@ -20,11 +27,12 @@ receivers:
               scrape_interval: 1m
               static_configs:
                  - targets: ['node-bff:5000']
-            - job_name: 'java-api'
-              scrape_interval: 1m
-              metrics_path: /actuator/prometheus
-              static_configs:
-                 - targets: ['java-api:5001']
+            # Note: Java metrics are getting sent to otlp/grpc endpoint
+            # - job_name: 'java-api'
+            #   scrape_interval: 1m
+            #   metrics_path: /actuator/prometheus
+            #   static_configs:
+            #      - targets: ['java-api:5001']
             - job_name: 'dotnet-api'
               scrape_interval: 1m
               static_configs:
@@ -33,34 +41,33 @@ receivers:
 exporters:
 
    elasticsearch:
-      cloudid: "${env:OTEL_EXPORTER_ELASTICSEARCH_CLOUD_ID}"
+      # cloudid: "${env:OTEL_EXPORTER_ELASTICSEARCH_CLOUD_ID}"
       endpoints: ["${env:OTEL_EXPORTER_ELASTICSEARCH_ENDPOINT}"]
       api_key: "${env:OTEL_EXPORTER_ELASTICSEARCH_API_KEY}"
-      traces_index: ryan-index-001
+      logs_index: "${env:OTEL_EXPORTER_ELASTICSEARCH_INDEX}"
 
-   otlp/metrics:
-      otlp:
-         endpoint: "${env:OTEL_EXPORTER_ELASTICAPM_ENDPOINT}"
-         headers:
-            Authorization: "${env:OTEL_EXPORTER_ELASTICAPM_AUTHORIZATION}"
-
-   otlp/traces:
-      otlp:
-         endpoint: "${env:OTEL_EXPORTER_ELASTICAPM_ENDPOINT}"
-         headers:
-            Authorization: "${env:OTEL_EXPORTER_ELASTICAPM_AUTHORIZATION}"
+   # metrics & traces
+   otlp/e:
+      endpoint: "${env:OTEL_EXPORTER_ELASTICAPM_ENDPOINT}"
+      headers:
+         Authorization: "${env:OTEL_EXPORTER_ELASTICAPM_AUTHORIZATION}"
 
 service:
    pipelines:
+      # this one not working for some reason...
       logs/dotnet_and_java:
          receivers: [filelog]
          exporters: [elasticsearch]
-      # logs/node:
-      #    receivers: [syslog]
-      #    exporters: [elasticsearch]
-      metrics:
+      # all pipelines below are working
+      logs/node:
+         receivers: [syslog]
+         exporters: [elasticsearch]
+      metrics/dotnet_and_node:
          receivers: [prometheus]
-         exporters: [otlp/metrics]
+         exporters: [otlp/e]
+      metrics/java:
+         receivers: [otlp/r]
+         exporters: [otlp/e]
       traces:
-         receivers: [otlp]
-         exporters: [otlp/traces]
+         receivers: [otlp/r]
+         exporters: [otlp/e]

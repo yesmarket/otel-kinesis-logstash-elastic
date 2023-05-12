@@ -1,9 +1,8 @@
-require('dotenv').config()
 const express = require("express");
 const axios = require('axios');
 const logger = require('./logs.js');
 const metrics = require('./metrics.js');
-require('./traces.js');
+require('dotenv').config()
 
 const PORT = parseInt(process.env.PORT || "5000");
 const app = express();
@@ -11,14 +10,15 @@ const app = express();
 // add the prometheus middleware to all routes
 app.use(metrics)
 
-app.get("/students", (req, res) => {
+app.get("/students/:id", (req, res) => {
 
-   axios.get(`http://${process.env.HOST_DOMAIN}:5002/students`)
+   // logger.info(req.params.id);
+   axios.get(`http://${process.env.HOST_DOMAIN}:5002/api/v1/students/${req.params.id}`)
    .then(function (response) {
       console.log(response);
-      axios.get(`http://${process.env.HOST_DOMAIN}:5001/api/v1/students/1`)
+      axios.get(`http://${process.env.HOST_DOMAIN}:5001/api/v1/students/${req.params.id}`)
       .then(function (response) {
-         logger.info(response);
+         logger.info("asdfgh12345");
          res.send('success');
       })
       .catch(function (error) {
@@ -31,7 +31,7 @@ app.get("/students", (req, res) => {
       res.send('failed');
    });
 
-   // logger.info('test');
+   // logger.info('asdfgh12345');
    // res.send('test');
 
 });
