@@ -2,7 +2,7 @@ receivers:
 
    # dotnet and java logs are written to file on shared volume
    filelog:
-      include: [ /var/log/*.txt ]
+      include: [ "/var/log/dotnet-api/*.txt", "/var/log/java-api/*.txt" ]
 
    # node.js logs are getting sent via syslog
    syslog:

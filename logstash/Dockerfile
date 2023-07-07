@@ -34,10 +34,11 @@ RUN logstash-plugin install logstash-input-kinesis
 
 # Copying logstash-output-elasticapm from build container (for when building logstash-output-elasticapm from source)
 # COPY --from=build --chown=logstash:logstash /usr/src/logstash-output-elasticapm/logstash-output-elasticapm-0.2.0.gem /tmp/
-COPY ./logstash-output-elasticapm/logstash-output-elasticapm-0.2.0.gem /tmp/
-RUN logstash-plugin install /tmp/logstash-output-elasticapm-0.2.0.gem
+# COPY ./logstash-output-elasticapm/logstash-output-elasticapm-0.2.0.gem /tmp/
+# RUN logstash-plugin install /tmp/logstash-output-elasticapm-0.2.0.gem
 
-# RUN logstash-plugin install logstash-output-elasticapm
+RUN logstash-plugin install logstash-output-elasticapm
+RUN logstash-plugin install logstash-filter-split_otlp_resourcelogs
 
 COPY ./config/logstash.yml ./config/pipelines.yml /usr/share/logstash/config/
 COPY ./pipeline/logs.conf /usr/share/logstash/pipeline/logs.conf

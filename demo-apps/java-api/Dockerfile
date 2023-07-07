@@ -10,19 +10,8 @@ RUN mvn -B -f ./pom.xml clean install
 
 FROM amazoncorretto:17-alpine-jdk AS runtime
 
-# RUN adduser -g ja -D ja
-
-RUN mkdir -p /opt/java-api
 COPY --from=build /tmp/opentelemetry-javaagent.jar /opt/java-api/
 COPY --from=build /tmp/target/java-api-0.0.1-SNAPSHOT.jar /opt/java-api/
-
-# RUN apk add doas
-# RUN adduser -g ja -D ja
-# RUN echo 'ja:123' | chpasswd
-# RUN echo 'permit persist :wheel' > /etc/doas.d/doas.conf
-
-# USER ja
-USER root
 
 WORKDIR /opt/java-api
 

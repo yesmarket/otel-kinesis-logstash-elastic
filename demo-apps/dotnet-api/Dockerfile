@@ -30,14 +30,9 @@ ENV DOTNET_SHARED_STORE="/otel-dotnet-auto/store"
 ENV DOTNET_STARTUP_HOOKS="/otel-dotnet-auto/net/OpenTelemetry.AutoInstrumentation.StartupHook.dll"
 ENV OTEL_DOTNET_AUTO_HOME="/otel-dotnet-auto"
 
-# RUN useradd -m -s /bin/bash da
-
 COPY --from=build /opt/dotnet-api/ /opt/dotnet-api/
 COPY --from=build /opt/dotnet-api/appsettings*.json $CONFIG_DIR
 COPY --from=build $OTEL_DOTNET_AUTO_HOME $OTEL_DOTNET_AUTO_HOME
-
-# USER da
-USER root
 
 WORKDIR /opt/dotnet-api
 

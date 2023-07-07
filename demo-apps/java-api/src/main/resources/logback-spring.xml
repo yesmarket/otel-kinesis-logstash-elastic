@@ -18,10 +18,10 @@
             <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter"/>
          </layout>
       </encoder>
-      <file>/var/log/java_log.txt</file>
+      <file>/var/log/java-api/log.txt</file>
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
          <!-- daily rollover -->
-         <fileNamePattern>java_log.txt.%d{yyyy-MM-dd}.log</fileNamePattern>
+         <fileNamePattern>log.txt.%d{yyyy-MM-dd}.log</fileNamePattern>
       </rollingPolicy>
    </appender>
    <springProfile name="dev">
